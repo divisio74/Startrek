@@ -1,28 +1,41 @@
 # Architecture
-__Baseline__
 
+==============================================================================================================
+
+## Tasks
+__Baseline__
 1. Crée une action random de la machine
 2. Faire un simple programme ("heuristique") qui va *essayer* de gérer l'atterrissage
-3. Sauvegarder les données qq part
-4.
+3. Sauvegarder les données qq part (score, cmb de step ça dure, pk ça a ended (termination / truncation))
+4. Crée des vidéos avec "gymnasium[other]"
 
+__Dépendance à installer__ :
+python3 -m venv venv.
+source venv./bin/activate
+pip install swig
+pip install gymnasium
+pip install "gymnasium[box2d]"
+
+__Agent (discrete)__
+1. 
+
+==============================================================================================================
 
 # Reinforcement learning
-### C'est quoi ? :
+__C'est quoi ?__ :
 Apprentissage de l'ia dans son environnement.
 
-### C'est composé de quoi ?:
+__C'est composé de quoi ?__:
 - Environnement
 - Score
 - L'IA (ou Agent)
 
-### Quel processus ?:
+__Quel processus ?__:
 Agent --> Step --> Environnement réagit : Environnement donne un score et un nouvel état --> Agent
 
+==============================================================================================================
 
-
-## Step (env.step())
-
+# Step (env.step())
 1) __Machine_state / observation__
 Valeurs de l'atterisseur
 [ 0.013,   # x (coordonnées : 0 centre de l'axe x)
@@ -42,7 +55,6 @@ Note donné par l'environnement à l'agent en fonction de:
 - 4. Moteurs (Expected least time possible)
 - 5. Contact des pattes (1 pattes = 10 points)
 - 6. Atterissage (+100 points) / Crash (-100  points)
-
 
 3) __Terminated (type: bool)__
 Mauvaise manoeuvre (Machine sors du cadre / Les deux pieds touchent pas le sol)
