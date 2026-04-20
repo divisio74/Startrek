@@ -1,0 +1,11 @@
+=== Score : -100 === Steps : 108
+=== Score : -100 === Steps : 188
+=== Score : -100 === Steps : 249
+=== Score : -100 === Steps : 318
+=== Score : -100 === Steps : 383
+=== Score : -100 === Steps : 493
+=== Score : -100 === Steps : 586
+=== Score : -100 === Steps : 675
+=== Score : -100 === Steps : 786
+=== Score : -100 === Steps : 852
+=== Score : -100 === Steps : 951

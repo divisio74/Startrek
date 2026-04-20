@@ -1,1 +1,42 @@
-ts : il faut le faire dans un pdf
+ts : il faut le faire dans un 
+
+__Baseline__
+
+1. Crée une action random de la machine
+2. Faire un simple programme ("heuristique") qui va *essayer* de gérer l'atterrissage
+3. Sauvegarder les données qq part
+4.  
+
+
+
+Les étapes concrètes
+1. Baseline — avant tout algo RL :
+
+Implémenter une politique random (actions aléatoires)
+Implémenter une heuristique simple (règles à la main)
+Logger les résultats : score, longueur d'épisode, raison de fin (crash / hors vue / timeout)
+Sauvegarder des vidéos
+
+2. Agent DQN (le vrai boulot) :
+
+Un réseau de neurones MLP (2-3 couches ReLU)
+Experience replay (buffer)
+Target network
+Epsilon-greedy avec décroissance
+Objectif : score moyen ≥ 200 sur 100 épisodes consécutifs
+
+3. Ablation — tester au moins une variante :
+
+Taille du buffer, hard vs soft update, normalisation des observations, reward clipping…
+
+4. Reproductibilité :
+
+≥ 5 seeds (0 à 4), mean ± 95% CI
+
+5. Livrables :
+
+Code propre (train.py, eval.py, README)
+Configs YAML
+Plots (returns, epsilon, loss), vidéos, CSV
+Rapport 4-6 pages
+Script one-click pour tout régénérer
