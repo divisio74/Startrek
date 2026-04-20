@@ -16,4 +16,4 @@ for i in range(10000):
     if terminated or truncated:
         observation, info = env.reset()
 
-env.close()
+env.close() 
