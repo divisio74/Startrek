@@ -1,0 +1,7 @@
+{
+  "env": "LunarLander-v3",
+  "policy": "heuristic",
+  "episodes": 50,
+  "seed": 0,
+  "render": "human"
+}
