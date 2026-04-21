@@ -1,1 +1,10 @@
 ts : il faut le faire dans un pdf
+
+jour1
+pour faire la task 1 et la premiere focntion heuristique je suis partie d'une base simple :
+
+je regarde obs[4] pour l'angle du dl'engin par rapport au sol et obs[3] pour la vitesse vertica le de l'engin
+ensuite j'ai tester avec le render mode human et j'ai constaté que c'etait pas horrible 
+juste petite probleme sur l'axe horizontale donc une bonne idée serait d'activer les moteurs latéraux lorsqu'on depasse 
+certianes bornes horizontale ?
+première essaie j'ai confondu le moteur droite et le moteur gauche j'inverse et la je constate que le module reste pile poile dans l'axe et continue de corriger l'angle 
