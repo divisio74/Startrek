@@ -5,7 +5,7 @@
 ## handle_episode
 ##
 
-
+from classification import ending_info
 
 def run_episode(env, policy):
     obs, info = env.reset()
@@ -19,4 +19,6 @@ def run_episode(env, policy):
             running = 1
         total_return += reward
         ep_len = ep_len + 1
-    return total_return , ep_len
+
+    ending_cause = ending_info(terminated, truncated, obs, reward)
+    return total_return , ep_len, ending_cause
