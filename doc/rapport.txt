@@ -1,5 +1,57 @@
 ts : il faut le faire dans un 
 
+
+Task 2:
+Implémentation d'un Agent DQN (Deep q network) Capable d'apprendre.
+
+- MLP (2-3 couches cachées x fonction) un réseau de neurones
+Une fonction qui prends 8 args (Machine_state)
+Ca renvoie 4 actions (Q-values) qui sont censé être meilleure.
+
+- Replay
+Buffer dans lequel l'ia stoque ses expériences.
+
+- Target net
+Une copie du réseau principal
+
+- 
+
+
+- MLP (2-3×ReLU) — un réseau de neurones
+
+prend l'état (8 valeurs) en entrée
+ressort la meilleure action à faire
+ReLU c'est la fonction d'activation entre les couches
+xécé
+- Replay (Experience Replay) — une mémoire
+
+l'agent stocke ses expériences (état, action, reward, état_suivant)
+il réapprend dessus aléatoirement pour ne pas oublier
+
+- Target net — un 2ème réseau stabilisateur
+
+évite que l'agent "chasse sa propre queue"
+copie du réseau principal, mis à jour moins souvent
+
+- Epsilon-greedy decay — exploration vs exploitation
+
+au début epsilon = 1.0 → actions aléatoires (exploration)
+progressivement epsilon diminue → l'agent utilise son réseau (exploitation)
+à la fin epsilon = 0.01 → presque toujours le réseau
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 __Baseline__
 
 1. Crée une action random de la machine

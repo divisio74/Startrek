@@ -16,11 +16,7 @@ Machine_state, info = env.reset(seed=42)
 if os.path.exists("./videos"):
     shutil.rmtree("./videos")
 os.makedirs("./videos")
-env = RecordVideo(
-    env,
-    video_folder="./videos",
-    episode_trigger=lambda ep: ep % 10 == 0
-)
+env = RecordVideo(env, video_folder="./videos", episode_trigger=lambda ep: ep % 10 == 0)
 
 #MACROS
 NOT_TERMINATED = 0
