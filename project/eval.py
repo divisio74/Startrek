@@ -6,7 +6,7 @@
 ##
 
 import argparse
-import json
+import yaml
 import gymnasium as gym
 from handle_ep import run_episode
 from policies import first_policy
@@ -14,8 +14,21 @@ from collections import Counter
 
 
 def run_eval(config):
-    render_mode = config.get("render")
+    product = config.get("video_folder")
+
+    if product :
+        render_mode = "rgb_array"
+    else :
+        render_mode = config.get("render")
+
     env = gym.make(config["env"], render_mode=render_mode)
+    if product:
+        env = gym.wrappers.RecordVideo(
+            env,
+            video_folder=product,
+            episode_trigger=lambda i: True,
+            name_prefix=config["policy"],
+        )
 
     if config["policy"] == "random":
         policy = lambda obs: env.action_space.sample()
@@ -49,5 +62,5 @@ if __name__ == "__main__":
     parser.add_argument("--config", required=True)
     args = parser.parse_args()
     with open(args.config) as f:
-        cfg = json.load(f)
+        cfg = yaml.safe_load(f)
     run_eval(cfg)
