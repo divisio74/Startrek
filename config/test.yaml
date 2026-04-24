@@ -1,7 +1,5 @@
-{
-  "env": "LunarLander-v3",
-  "policy": "heuristic",
-  "episodes": 50,
-  "seed": 0,
-  "render": "human"
-}
+env: LunarLander-v3
+policy: random
+episodes: 50
+seed: 0
+video_folder: product/
