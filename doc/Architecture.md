@@ -9,6 +9,9 @@ __Baseline__
 3. Sauvegarder les données qq part (score, cmb de step ça dure, pk ça a ended (termination / truncation))
 4. Crée des vidéos avec "gymnasium[other]"
 
+new :
+1. Faire apprendre la machine avec une policy heuristique (à la main)
+
 __Dépendance à installer__ :
 python3 -m venv venv.
 source venv./bin/activate
@@ -18,6 +21,17 @@ pip install "gymnasium[box2d]"
 
 __Agent (discrete)__
 1. 
+
+==============================================================================================================
+
+1. Crash logs :
+- si, reward négatif et terminated:
+    - crash
+- si, reward positif et terminated:
+    - out of view
+- si, reward haut score (supérieur à 100) et terminated:
+    - sleep (sucess)
+
 
 ==============================================================================================================
 
@@ -31,9 +45,15 @@ __C'est composé de quoi ?__:
 - L'IA (ou Agent)
 
 __Quel processus ?__:
-Agent --> Step --> Environnement réagit : Environnement donne un score et un nouvel état --> Agent
+Agent : Action (0-3) --> Step --> result (Obs) --> Policy (Améliorer l'action) --> Action
 
 ==============================================================================================================
+# Action
+
+0) do nothing
+1) fire left thruster
+2) fire main engine
+3) fire right thruster
 
 # Step (env.step())
 1) __Machine_state / observation__
@@ -57,6 +77,7 @@ Note donné par l'environnement à l'agent en fonction de:
 - 6. Atterissage (+100 points) / Crash (-100  points)
 
 3) __Terminated (type: bool)__
+Terminated : Programme finit (soit landed ou crash)
 Mauvaise manoeuvre (Machine sors du cadre / Les deux pieds touchent pas le sol)
 - si Machine sors du cadre :
     - vrai : Terminated = true
