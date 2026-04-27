@@ -10,6 +10,10 @@ from gymnasium.wrappers import RecordVideo #Pour la vidéo
 from dataclasses import dataclass #Pour les dataclasses
 import shutil, os # Juste pour effacer et remettre la vidéo
 
+import argparse
+import yaml
+from collections import Counter
+
 env = gym.make("LunarLander-v3", render_mode ="rgb_array")
 alunisseur, info = env.reset(seed=42)
 
@@ -66,23 +70,24 @@ def store_data(sco, len, term, trun):
         e.end_ = SLEEP
     return e
 
-last_reset_step = 0
-total_reward = 0
-data_: list[episode] = []
-for i in range(3000):
-    data__: episode
+def run(cfg):
+    last_reset_step = 0
+    total_reward = 0
+    data_: list[episode] = []
+    for i in range(3000):
+        data__: episode
 
-    action = policy(alunisseur)
-    alunisseur, reward, terminated, truncated, info = env.step(action)
-    total_reward += reward
-    if is_finished(truncated, terminated) == True:
-        lenstep = i - last_reset_step
-        data_.append(store_data(total_reward, lenstep, terminated, truncated))
-        last_reset_step = i
-        print(f"=== Score : {total_reward} === Steps : {i}")
+        action = policy(alunisseur)
+        alunisseur, reward, terminated, truncated, info = env.step(action)
+        total_reward += reward
+        if is_finished(truncated, terminated) == True:
+            lenstep = i - last_reset_step
+            data_.append(store_data(total_reward, lenstep, terminated, truncated))
+            last_reset_step = i
+            print(f"=== Score : {total_reward} === Steps : {i}")
 
-        total_reward = 0
-        alunisseur, info = env.reset()
+            total_reward = 0
+            alunisseur, info = env.reset()
 
 # Fixer les erreurs.
 # Faire apprendre à la alunisseur. Ses erreurs. [OK]
@@ -95,3 +100,11 @@ for i in range(3000):
 # Plots manquants
 
 env.close()
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--config", required=True)
+    args = parser.parse_args()
+    with open(args.config) as f:
+        cfg = yaml.safe_load(f)
+    run(cfg)
