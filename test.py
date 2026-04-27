@@ -23,6 +23,10 @@ NOT_TERMINATED = 0
 TERMINATED = 1
 NOT_TRUNCATED = 2
 TRUNCATED = 3
+SLEEP = 4
+CRASH = 5
+OUT_VIEW = 6
+TIMEOUT = 7
 
 #DATASTRUCT
 @dataclass
@@ -66,14 +70,14 @@ def store_data(sco, len, term, trun):
 
 last_reset_step = 0
 total_score = 0
+data_: list[episode] = []
 for i in range(1000):
-    data_: list[episode] = []
     data__: episode
 
     action = env.action_space.sample()
     Machine_state, score_step, terminated, truncated, info = env.step(action)
-    total_score = score_step
     if is_finished(truncated, terminated) == True:
+        total_score = score_step
         lenstep = i - last_reset_step
         data_.append(store_data(score_step, lenstep, terminated, truncated))
         last_reset = i
