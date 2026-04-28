@@ -11,6 +11,8 @@ from dataclasses import dataclass #Pour les dataclasses
 import shutil, os # Juste pour effacer et remettre la vidéo
 import torch.nn as nn # MLP
 from collections import deque # liste chaîné autogestionné
+import random
+
 
 env = gym.make("LunarLander-v3", render_mode ="rgb_array")
 alunisseur, info = env.reset(seed=42)
@@ -28,6 +30,8 @@ TIMEOUT = 3
 
 state_dim = 8
 n_actions = 4
+nn_size = 128
+epsilon = 0.1
 
 #DATASTRUCT
 @dataclass
@@ -72,37 +76,27 @@ def store_data(sco, len, term, trun):
     return e
 
 o_net = nn.Sequential(
-    nn.Linear(state_dim, 128), nn.ReLU(),
-    nn.Linear(128, 128), nn.ReLU(),
-    nn.Linear(128, n_actions)
+    nn.Linear(state_dim, nn_size), nn.ReLU(),
+    nn.Linear(nn_size, nn_size), nn.ReLU(),
+    nn.Linear(nn_size, n_actions)
 )
 
 t_net = nn.Sequential(
-    nn.Linear(state_dim, 128), nn.ReLU(),
-    nn.Linear(128, 128), nn.ReLU(),
-    nn.Linear(128, n_actions)
+    nn.Linear(state_dim, nn_size), nn.ReLU(),
+    nn.Linear(nn_size, nn_size), nn.ReLU(),
+    nn.Linear(nn_size, n_actions)
 )
-
-# (état, action, récompense, état_suivant, done)
-# class Replay:
-#     buffer = []
-#     obs = [0.1, 0.5, -0.3]  # état
-#     action = 2               # ce qu'il a fait
-#     reward = -0.1  
-#     buffer.append(obs, action, reward)
 
 class Replay:
     def __init__(self):
         self.buffer = deque(maxlen=50000)
     def push(self, obs, action, reward, new_obs, done):
-        self.buffer.append(obs, action, reward, new_obs, done)
+        self.buffer.append((obs, action, reward, new_obs, done))
     def data_for_train(self):
-        return self.buffer
-
-# class Replay:
-#     buffer = deque(maxlen=50000)
-#     buffer.append(obs, action, reward)
-
+        random_xp_tuple = random.sample(self.buffer, nn_size)
+        return random_xp_tuple
+    def __len__(self):
+        return len(self.buffer)
 
 last_reset_step = 0
 total_reward = 0
@@ -111,7 +105,11 @@ for i in range(3000):
     data__: episode
     action = policy(alunisseur)
 
-    # Utiliser uneia
+    if random.random() < epsilon:
+        action = env.action_space.sample()  # exploration
+    else:
+        action = o_net(alunisseur).argmax()
+
     alunisseur, reward, terminated, truncated, info = env.step(action)
     total_reward += reward
     if is_finished(truncated, terminated) == True:
@@ -122,7 +120,8 @@ for i in range(3000):
 
         total_reward = 0
         alunisseur, info = env.reset()
+        epsilon = max(epsilon * 0.995, 0.01) # decay epsilon
 
 
 
-env.close()
+env.close() 
