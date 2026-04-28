@@ -12,26 +12,27 @@ import shutil, os # Juste pour effacer et remettre la vidéo
 import torch.nn as nn # MLP
 from collections import deque # liste chaîné autogestionné
 import random
+import torch
+import torch.nn.functional as F
 
+# env = gym.make("LunarLander-v3", render_mode ="rgb_array")
+# alunisseur, info = env.reset(seed=42)
 
-env = gym.make("LunarLander-v3", render_mode ="rgb_array")
-alunisseur, info = env.reset(seed=42)
-
-if os.path.exists("./videos"):
-    shutil.rmtree("./videos")
-os.makedirs("./videos")
-env = RecordVideo(env, video_folder="./videos", episode_trigger=lambda ep: ep % 10 == 0)
+# if os.path.exists("./videos"):
+#     shutil.rmtree("./videos")
+# os.makedirs("./videos")
+# env = RecordVideo(env, video_folder="./videos", episode_trigger=lambda ep: ep % 10 == 0)
 
 #MACROS
 SLEEP = 0
 CRASH = 1
 OUT_OF_VIEW = 2
 TIMEOUT = 3
-
 state_dim = 8
 n_actions = 4
 nn_size = 128
-epsilon = 0.1
+BATCH_SIZE = 128
+# epsilon = 0.1
 
 #DATASTRUCT
 @dataclass
@@ -93,35 +94,89 @@ class Replay:
     def push(self, obs, action, reward, new_obs, done):
         self.buffer.append((obs, action, reward, new_obs, done))
     def data_for_train(self):
-        random_xp_tuple = random.sample(self.buffer, nn_size)
-        return random_xp_tuple
+        random_xp_tuple = random.sample(self.buffer, BATCH_SIZE)
+        obs, actions, rewards, next_obs, dones = zip(*random_xp_tuple)
+        return (
+            torch.tensor(obs, dtype=torch.float32),
+            torch.tensor(actions, dtype=torch.long),
+            torch.tensor(rewards, dtype=torch.float32),
+            torch.tensor(next_obs, dtype=torch.float32),
+            torch.tensor(dones, dtype=torch.float32)
+        )
+    def ready(self):
+        return len(self.buffer) >= BATCH_SIZE
     def __len__(self):
         return len(self.buffer)
 
-last_reset_step = 0
-total_reward = 0
-data_: list[episode] = []
-for i in range(3000):
-    data__: episode
-    action = policy(alunisseur)
-
+def ai_nn(alunisseur, epsilon, env):
     if random.random() < epsilon:
-        action = env.action_space.sample()  # exploration
+        return env.action_space.sample()  # exploration
     else:
-        action = o_net(alunisseur).argmax()
+        obs_tensor = torch.tensor(alunisseur, dtype=torch.float32)
+        return o_net(obs_tensor).argmax().item()
 
-    alunisseur, reward, terminated, truncated, info = env.step(action)
-    total_reward += reward
-    if is_finished(truncated, terminated) == True:
-        lenstep = i - last_reset_step
-        data_.append(store_data(total_reward, lenstep, terminated, truncated))
-        last_reset_step = i
-        print(f"=== Score : {total_reward} === Steps : {i}")
 
+optimizer = torch.optim.Adam(o_net.parameters(), lr=1e-3)
+replay = Replay()
+t_net.load_state_dict(o_net.state_dict())  # copie initiale
+
+def learn(batch):
+    obs, actions, rewards, next_obs, dones = batch
+    with torch.no_grad():
+        next_q = t_net(next_obs).max(dim=1).values
+        target = rewards + 0.99 * next_q * (1 - dones)
+    predicted = o_net(obs).gather(1, actions.unsqueeze(1)).squeeze(1)
+    loss = F.mse_loss(predicted, target)
+    optimizer.zero_grad()
+    loss.backward()
+    optimizer.step()
+    return loss.item()
+
+def run():
+    list_ep: list[episode] = []
+    epsilon = 1.0  # commencer à 1.0, pas 0.1
+    step = 0       # compteur global de steps
+
+    env = gym.make("LunarLander-v3", render_mode ="rgb_array")
+
+    if os.path.exists("./videos"):
+        shutil.rmtree("./videos")
+    os.makedirs("./videos")
+    env = RecordVideo(env, video_folder="./videos", episode_trigger=lambda ep: ep % 10 == 0)
+    alunisseur, info = env.reset(seed=42)
+    for ep in range(1000):
         total_reward = 0
-        alunisseur, info = env.reset()
-        epsilon = max(epsilon * 0.995, 0.01) # decay epsilon
+        ep_step = 0
+        alunisseur, info = env.reset(seed=42)
+
+        while True:
+            obs_avant = alunisseur
+            action = ai_nn(alunisseur, epsilon, env)
+            alunisseur, reward, terminated, truncated, info = env.step(action)
+            total_reward += reward
+            ep_step += 1
+            step += 1
+
+            replay.push(obs_avant, action, reward, alunisseur, terminated)
+
+            if replay.ready():
+                batch = replay.data_for_train()
+                learn(batch)
+
+            if step % 100 == 0:
+                t_net.load_state_dict(o_net.state_dict())
+
+            if terminated or truncated:
+                list_ep.append(store_data(total_reward, ep_step, terminated, truncated))
+                epsilon = max(epsilon * 0.995, 0.01)
+                break
+    env.close()
+    return list_ep
+
+if __name__ == "__main__":
+    results = run()
+    for i, ep in enumerate(results):
+        print(f"Episode {i:3d} | score: {ep.sco_:8.2f} | steps: {ep.len_:4d} | end: {ep.end_}")
 
 
-
-env.close() 
+# Replay.push(alunisseur, reward, alunisseur, "caca")
