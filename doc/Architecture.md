@@ -20,7 +20,7 @@ pip install gymnasium
 pip install "gymnasium[box2d]"
 
 __Agent (discrete)__
-1. 
+1. Un agent capable de choisir une action
 
 ==============================================================================================================
 
