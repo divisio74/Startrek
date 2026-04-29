@@ -12,8 +12,15 @@ from handle_ep import run_episode
 from policies import first_policy
 from collections import Counter
 
+def policy_handler(config, env):
+    if config["policy"] == "random":
+        return lambda obs: env.action_space.sample()
+    elif config["policy"] == "heuristic":
+        return first_policy
+    else:
+        raise ValueError(f"Unknown policy: {config['policy']}")
 
-def run_eval(config):
+def env_handler(config):
     product = config.get("video_folder")
 
     if product :
@@ -29,13 +36,12 @@ def run_eval(config):
             episode_trigger=lambda i: True,
             name_prefix=config["policy"],
         )
+    return env
 
-    if config["policy"] == "random":
-        policy = lambda obs: env.action_space.sample()
-    elif config["policy"] == "heuristic":
-        policy = first_policy
-    else:
-        raise ValueError(f"Unknown policy: {config['policy']}")
+def run_eval(config):
+
+    env = env_handler(config)
+    policy = policy_handler(config, env)
 
     n = config["episodes"]
     returns = []
