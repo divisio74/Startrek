@@ -123,14 +123,14 @@ t_net.load_state_dict(o_net.state_dict())  # copie initiale
 def learn(batch):
     obs, actions, rewards, next_obs, dones = batch
     with torch.no_grad():
-        next_q = t_net(next_obs).max(dim=1).values
-        target = rewards + 0.99 * next_q * (1 - dones)
-    predicted = o_net(obs).gather(1, actions.unsqueeze(1)).squeeze(1)
+        next_s = t_net(next_obs).max(dim=1).values #meilleur action
+        target = rewards + 0.99 * next_s * (1 - dones)    # Bellman : valeur d'une action
+    predicted = o_net(obs).gather(1, actions.unsqueeze(1)).squeeze(1) #back to realit"
     loss = F.mse_loss(predicted, target)
     optimizer.zero_grad()
-    loss.backward()
+    loss.backward() #relearn
     optimizer.step()
-    return loss.item()
+    return loss.item() #sureté
 
 def run():
     list_ep: list[episode] = []
@@ -144,7 +144,7 @@ def run():
     os.makedirs("./videos")
     env = RecordVideo(env, video_folder="./videos", episode_trigger=lambda ep: ep % 10 == 0)
     alunisseur, info = env.reset(seed=42)
-    for ep in range(400):
+    for ep in range(40):
         total_reward = 0
         ep_step = 0
         alunisseur, info = env.reset(seed=42)

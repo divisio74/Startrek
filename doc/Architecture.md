@@ -19,6 +19,7 @@ pip install torch
 pip install "gymnasium[other]"
 pip install pyyaml
 
+
 __Agent (discrete)__
 1. Crée un MLP
 2. Stoquer les expériences
