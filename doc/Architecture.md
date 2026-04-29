@@ -17,6 +17,7 @@ pip install gymnasium
 pip install "gymnasium[box2d]"
 pip install torch
 pip install "gymnasium[other]"
+pip install pyyaml
 
 __Agent (discrete)__
 1. Crée un MLP
