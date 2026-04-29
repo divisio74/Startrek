@@ -1,5 +1,5 @@
 env: LunarLander-v3
-policy: random
+policy: epsilon
 episodes: 50
 seed: 0
 video_folder: product/

@@ -10,11 +10,22 @@ import yaml
 import gymnasium as gym
 from handle_ep import run_episode
 from policies import first_policy
+from policies import epsilon_decay
 from collections import Counter
+import torch.nn as nn
+from collections import deque # liste chaîné autogestionné
+import torch
+from replay import Replay
 
-def policy_handler(config, env):
+NB_INPUT = 8
+NB_ACTION = 4
+NB_HIDDEN = 128
+
+def policy_handler(config, env, epsilon, actual_n):
     if config["policy"] == "random":
         return lambda obs: env.action_space.sample()
+    elif config["policy"] == "epsilon":
+        return lambda obs: epsilon_decay(obs, epsilon, env, actual_n)
     elif config["policy"] == "heuristic":
         return first_policy
     else:
@@ -38,23 +49,42 @@ def env_handler(config):
         )
     return env
 
+def create_nn():
+    n_n = nn.Sequential(
+        nn.Linear(NB_INPUT, NB_HIDDEN), nn.ReLU(),
+        nn.Linear(NB_HIDDEN, NB_HIDDEN), nn.ReLU(),
+        nn.Linear(NB_HIDDEN, NB_ACTION)
+    )
+    return n_n
+
 def run_eval(config):
 
+    actual_n = create_nn()
+    target_n = create_nn()
+    optimizer = torch.optim.Adam(actual_n.parameters(), lr=1e-3)
+    replay = Replay()
+    target_n.load_state_dict(actual_n.state_dict())
+
     env = env_handler(config)
-    policy = policy_handler(config, env)
+    epsilon = 1.0
 
     n = config["episodes"]
     returns = []
     lengths = []
     causes = []
+    replay = Replay()
+    step = 0
 
     for i in range(n):
-        total_return, ep_len, ending_cause = run_episode(env, policy)
+        policy = policy_handler(config, env, epsilon, actual_n)
+        total_return, ep_len, ending_cause, epsilon, step = run_episode(env, policy, replay, optimizer, target_n, actual_n, epsilon, step)
         returns.append(total_return)
         lengths.append(ep_len)
         causes.append(ending_cause)
+        epsilon = max(epsilon * 0.995, 0.01)
         print(f"  episode number : {i+1}/{n}-> total_return = {total_return:.2f}, action_len = {ep_len}")
         print(f"{ending_cause}")
+
 
     mean_return = sum(returns) / n
     mean_action_len = sum(lengths) / n

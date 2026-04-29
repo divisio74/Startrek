@@ -5,6 +5,16 @@
 ## policies
 ##
 
+import random
+import torch
+
+def epsilon_decay(alunisseur, epsilon, env, o_net):
+    if random.random() < epsilon:
+        return env.action_space.sample()  # exploration
+    else:
+        obs_tensor = torch.tensor(alunisseur, dtype=torch.float32)
+        return o_net(obs_tensor).argmax().item()
+
 def first_policy(obs):
     angle = obs[4]
     vitesse_verti = obs[3]

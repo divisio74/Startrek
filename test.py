@@ -104,9 +104,9 @@ class Replay:
             torch.tensor(dones, dtype=torch.float32)
         )
     def ready(self):
-        return len(self.buffer) >= BATCH_SIZE
+        return self.buffer.__len__() >= BATCH_SIZE
     def __len__(self):
-        return len(self.buffer)
+        return self.buffer.__len__()
 
 def ai_nn(alunisseur, epsilon, env):
     if random.random() < epsilon:
