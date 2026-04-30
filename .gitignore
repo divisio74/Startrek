@@ -1,4 +1,8 @@
 .venv/
+logs/
+product/
 __pycache__/
 *.pyc
 prod/
+video
+videos
