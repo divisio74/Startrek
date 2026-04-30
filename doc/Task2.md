@@ -63,3 +63,12 @@ class replay():
         return baffa
     def len():
         return slef.buffer.__len__
+
+
+# MOdification fix pierre:
+
+- Fix arg in run_episdode for separate train and eval properly.
+
+- Add logg in csv way.
+
+- Add a new params config in yaml : model_path: models/epsilon_seed0.pt
