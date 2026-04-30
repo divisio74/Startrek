@@ -8,3 +8,6 @@ ensuite j'ai tester avec le render mode human et j'ai constaté que c'etait pas 
 juste petite probleme sur l'axe horizontale donc une bonne idée serait d'activer les moteurs latéraux lorsqu'on depasse 
 certianes bornes horizontale ?
 première essaie j'ai confondu le moteur droite et le moteur gauche j'inverse et la je constate que le module reste pile poile dans l'axe et continue de corriger l'angle 
+
+jour2
+Implémentation de l'agent mlp, replay, epsilon, et d'une fonction pour learn (dans replay, train.py et eval.py)
