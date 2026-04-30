@@ -10,7 +10,7 @@ import torch
 
 def epsilon_decay(alunisseur, epsilon, env, o_net):
     if random.random() < epsilon:
-        return env.action_space.sample()  # exploration
+        return env.action_space.sample()
     else:
         obs_tensor = torch.tensor(alunisseur, dtype=torch.float32)
         return o_net(obs_tensor).argmax().item()
