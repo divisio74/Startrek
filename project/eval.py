@@ -8,6 +8,7 @@
 import argparse
 import random
 from collections import Counter
+import os
 
 import gymnasium as gym
 import torch
@@ -108,7 +109,13 @@ def run_eval(config):
     print(f"[eval | {config['policy']}] mean_return = {mean_return:.2f}, mean_action_len = {mean_action_len:.1f} avec {n} runs")
     print(f"causes: {dict(Counter(causes))}")
 
-    log_path = make_log_path("eval", config["policy"], seed)
+    modelpath = config.get("model_path")
+    if modelpath:
+        model_id = os.path.splitext(os.path.basename(modelpath))[0]
+        log_path = make_log_path("eval", model_id)
+    else:
+        log_path = make_log_path("eval", config["policy"], seed)
+
     write_csv(log_path, rows, ["episode", "return", "length", "cause", "seed"])
     print(f"log -> {log_path}")
 

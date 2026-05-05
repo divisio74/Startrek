@@ -10,10 +10,12 @@ import os
 from datetime import datetime
 
 
-def make_log_path(prefix, policy, seed=None, log_dir="logs"):
+def make_log_path(prefix, policy=None, seed=None, log_dir="logs"):
     os.makedirs(log_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    parts = [prefix, policy]
+    parts = [prefix]
+    if policy is not None:
+        parts.append(policy)
     if seed is not None:
         parts.append(f"seed{seed}")
     parts.append(timestamp)
