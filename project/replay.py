@@ -11,12 +11,11 @@ from collections import deque
 import torch
 
 BATCH_SIZE = 128
-BUFFER_SIZE = 50000
 
 
 class Replay:
-    def __init__(self):
-        self.buffer = deque(maxlen=BUFFER_SIZE)
+    def __init__(self, buffer_size):
+        self.buffer = deque(maxlen=buffer_size)
 
     def push(self, obs, action, reward, new_obs, done):
         self.buffer.append((obs, action, reward, new_obs, done))
