@@ -1,0 +1,6 @@
+env: LunarLander-v3
+policy: epsilon
+episodes: 400
+seed: 0
+buffer_size: 50000
+test_id: test_50K

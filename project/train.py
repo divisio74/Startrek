@@ -26,18 +26,26 @@ EPSILON_MIN = 0.01
 
 def run_train(config):
     seed = config.get("seed")
+    test_id = config.get("test_id")
+    buffer_size = config.get("buffer_size")
     env = env_handler(config)
     if seed is not None:
         random.seed(seed)
         torch.manual_seed(seed)
         env.reset(seed=seed)
         env.action_space.seed(seed)
+    if buffer_size is not None:
+        replay = Replay(buffer_size)
+    else :
+        buffer_size = 50000
+        replay = Replay(buffer_size)
+
+
 
     actual_n = create_nn()
     target_n = create_nn()
     target_n.load_state_dict(actual_n.state_dict())
     optimizer = torch.optim.Adam(actual_n.parameters(), lr=LEARNING_RATE)
-    replay = Replay()
 
     epsilon = EPSILON_START
     step = 0
@@ -69,6 +77,7 @@ def run_train(config):
             "cause": ending_cause,
             "epsilon": round(epsilon, 4),
             "seed": seed,
+            "buffer_size": buffer_size,
         })
         epsilon = max(epsilon * EPSILON_DECAY, EPSILON_MIN)
         print(f"  episode {i + 1}/{n} -> total_return = {total_return:.2f}, action_len = {ep_len}")
@@ -79,14 +88,18 @@ def run_train(config):
     print(f"[train | {config['policy']}] mean_return = {mean_return:.2f}, mean_action_len = {mean_action_len:.1f} avec {n} runs")
     print(f"causes: {dict(Counter(causes))}")
 
-    log_path = make_log_path("train", config["policy"], seed)
-    write_csv(log_path, rows, ["episode", "return", "length", "cause", "epsilon", "seed"])
-    print(f"log -> {log_path}")
-
     os.makedirs("models", exist_ok=True)
-    model_path = f"models/{config['policy']}_seed{seed}.pt"
+    if test_id is not None:
+        prefixe = f"Train{test_id}"
+        model_path = f"models/{config['policy']}_seed{seed}_{test_id}.pt"
+    else :
+        prefixe = f"Train"
+        model_path = f"models/{config['policy']}_seed{seed}_{buffer_size}.pt"
     torch.save(actual_n.state_dict(), model_path)
     print(f"model -> {model_path}")
+    log_path = make_log_path(prefixe, config["policy"], seed)
+    write_csv(log_path, rows, ["episode", "return", "length", "cause", "epsilon", "seed", "buffer_size"])
+    print(f"log -> {log_path}")
 
     env.close()
     return actual_n

@@ -1,5 +1,6 @@
 env: LunarLander-v3
 policy: epsilon
-episodes: 100
-seed: 0
-model_path: models/epsilon_seed0.pt
+episodes: 300
+seed: 1
+model_path: "models/epsilon_seed0_test_50K.pt"
+test_id: eval2
