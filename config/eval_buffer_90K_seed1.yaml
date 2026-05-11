@@ -1,0 +1,5 @@
+env: LunarLander-v3
+policy: epsilon
+episodes: 300
+seed: 1
+model_path: "models/epsilon_seed0_test_90K.pt"

@@ -1,6 +1,5 @@
 # Rapport — StartTrek (LunarLander-v3) TASK 1
 
-> **Note** : à rendre au format PDF.
 
 ---
 
