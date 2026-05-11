@@ -18,4 +18,6 @@ je vais docn tanté de retrain le model 50K avec différentes seed pour voir si 
 
 Malgres les test de 3 seed (0 1 2 ) (voir image ablation2) on constate que les trois reste en dessous de 200 de mean ce qui veut dire que le probleme est ailleurs en attendant nous poursuivrons la suite de cet exercice avec le model a 90K.
 
+PS: une possibilité a envisager est que le nombre d'epoch n'ets peut etre pas suffisant pour le 50 mais suffisant pour le 90K car on voit sur les premiers plot que j'avais fait j'avais analyser les mean return du train et j'avais vue que les models 50 et 90 convergeait a la fin pour faire le break avec les autres mais que peut etre le 50K n'a pas eu le temps de se stabiliser alors que celui de 90K oui ... c'tes une theorie .
+
 
