@@ -12,7 +12,6 @@ from collections import Counter
 
 import torch
 import yaml
-
 from eval import create_nn, env_handler, policy_handler
 from handle_ep import run_episode
 from logger import make_log_path, write_csv
@@ -93,7 +92,7 @@ def run_train(config):
         prefixe = f"Train{test_id}"
         model_path = f"models/{config['policy']}_seed{seed}_{test_id}.pt"
     else :
-        prefixe = f"Train"
+        prefixe = "Train"
         model_path = f"models/{config['policy']}_seed{seed}_{buffer_size}.pt"
     torch.save(actual_n.state_dict(), model_path)
     print(f"model -> {model_path}")

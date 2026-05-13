@@ -2,7 +2,7 @@
 ## EPITECH PROJECT, 2026
 ## G-AIA-401-LYN-4-1-starttrek-7
 ## File description:
-## plot2 — variation entre seeds (eval)
+## plot2
 ##
 
 import sys
@@ -37,7 +37,7 @@ plt.legend()
 plt.grid(True, alpha=0.3)
 plt.savefig("seeds_variation.png", dpi=150, bbox_inches="tight")
 print("saved seeds_variation.png")
-for s, d in zip(seeds, data):
+for s, d in zip(seeds, data, strict=True):
     print(f"  seed {s}: mean = {np.mean(d):.2f}  std = {np.std(d, ddof=1):.2f}  "
           f"min = {np.min(d):.1f}  max = {np.max(d):.1f}")
 print(f"  GLOBAL: {global_mean:.2f} ± {ci:.2f} (95% CI)  "

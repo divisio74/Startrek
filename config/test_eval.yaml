@@ -3,4 +3,5 @@ policy: epsilon
 episodes: 300
 seed: 0
 model_path: "models/epsilon_seed0_test_90K.pt"
+video_folder: "product"
 

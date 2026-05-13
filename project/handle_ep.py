@@ -7,7 +7,6 @@
 
 import torch
 import torch.nn.functional as F
-
 from classification import ending_info
 
 GAMMA = 0.99

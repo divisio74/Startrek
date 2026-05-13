@@ -6,15 +6,14 @@
 ##
 
 import argparse
+import os
 import random
 from collections import Counter
-import os
 
 import gymnasium as gym
 import torch
 import torch.nn as nn
 import yaml
-
 from handle_ep import run_episode
 from logger import make_log_path, write_csv
 from policies import epsilon_greedy, first_policy
@@ -36,10 +35,7 @@ def create_nn():
 
 def env_handler(config):
     product = config.get("video_folder")
-    if product:
-        render_mode = "rgb_array"
-    else:
-        render_mode = config.get("render")
+    render_mode = "rgb_array" if product else config.get("render")
 
     env = gym.make(config["env"], render_mode=render_mode)
     if product:
