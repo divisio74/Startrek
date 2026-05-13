@@ -5,12 +5,11 @@
 ## classification
 ##
 
-import gymnasium as gym
 
 def ending_info(terminated, truncated, obs, last_reward):
-    if (truncated == True):
+    if truncated:
         return "truncated"
-    if (terminated == True):
+    if terminated:
         if (obs[0] > 1 or obs[0] < -1):
             return "out of view"
         if (last_reward >= 50):

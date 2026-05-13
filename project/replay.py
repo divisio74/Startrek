@@ -22,7 +22,7 @@ class Replay:
 
     def data_for_train(self):
         batch = random.sample(self.buffer, BATCH_SIZE)
-        obs, actions, rewards, next_obs, dones = zip(*batch)
+        obs, actions, rewards, next_obs, dones = zip(*batch, strict=True)
         return (
             torch.tensor(obs, dtype=torch.float32),
             torch.tensor(actions, dtype=torch.long),
