@@ -12,3 +12,4 @@
 # # moviepy
 
 # Faire en une commande
+# python project/eval.py --config config/test.yaml
