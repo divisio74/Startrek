@@ -1,11 +1,12 @@
+#!/usr/bin/env bash
+
 RED="\033[31m"
 GREEN="\033[32m"
 YELLOW="\033[33m"
 BLUE="\033[34m"
 RESET="\033[0m"
 
-echo "${GREEN}Installation des dépendances..${RESET}"
-sudo apt install python3-xyz
+echo -e     "${GREEN}Installation des dépendances..${RESET}"
 python3 -m venv venv.
 source venv./bin/activate
 venv./bin/pip install gymnasium
@@ -14,10 +15,10 @@ venv./bin/pip install torch
 venv./bin/pip install pyyaml
 venv./bin/pip install "gymnasium[other]"
 
-echo "${GREEN}Exécution du programme..${RESET}"
-echo "${GREEN}Choisit la config que tu veux utiliser parmi la liste suivante :${RESET}"
+echo -e "${GREEN}Exécution du programme..${RESET}"
+echo -e "${GREEN}Choisit la config que tu veux utiliser parmi la liste suivante :${RESET}"
 ls config
-echo "${GREEN}Indique le nom de la config (sans le ".yaml") :${RESET}"
+echo -e "${GREEN}Indique le nom de la config (sans le ".yaml") :${RESET}"
 read VARIABLE
 case $VARIABLE in
     buffer_1K)
@@ -68,5 +69,3 @@ case $VARIABLE in
         echo "${RED}Fichier inexistant${RESET}"
         ;;
 esac
-
-python3 project/eval.py --config config/test_eval.yaml
